@@ -1,90 +1,89 @@
+#!/usr/bin/env python3
 import matplotlib.pyplot as plt
 import numpy as np
-from soda import *
+
+
 
 font = {'size':18, 'family':'serif'}
 plt.matplotlib.rc('font', **font)
 
-time = 4
+def read_file(filename):
+    data = np.loadtxt(filename)
+    t = data[:,0]
+    xNGC = data[:,1]
+    yNGC = data[:,2]
+    zNGC = data[:,3]
 
-# GC 6D coordinates
+    xSag = data[:,7]
+    ySag = data[:,8]
+    zSag = data[:,9]
 
-satellite_model = ['hernquist', 1E10, 9.8]
-satellite_model_sgr2 = ['NFW', 1E10, 44, 8]
+    ncols = np.shape(data)[1]
 
-sgr_pos = [16.1, 2.35, -6.12]
-sgr_vel = [242.5, 5.6, 228.1]
+    if ncols==22:
+        xLMC = data[:,13]
+        yLMC = data[:,14]
+        zLMC = data[:,15]
+        x_rel = data[:,19]
+        y_rel = data[:,20]
+        z_rel = data[:,21]
 
-pos_host = [0,0,0]
-vel_host = [0,0,0]
+        return t, xNGC, yNGC, zNGC, xSag, ySag, zSag, xLMC, yLMC, zLMC, x_rel, y_rel, z_rel
 
-pos_NGC2419 = [-87.43, -0.51, 37.31]
-vel_NGC2419 = [16.55, 48.46, -31.33]
+    if ncols==16:
+        x_rel = data[:,13]
+        y_rel = data[:,14]
+        z_rel = data[:,15]
 
-pos_NGC2419_2 = [-79.1-8.3, -0.5, 37.4-0.014]
-vel_NGC2419_2 = [-32.6+11.1, -177.2+240.24, -119.3+7.25]
-host_model = ['NFW', 1E12, 261, 9.86]
-disk_params = [6.5E10, 3.0, 0.53]
-bulge_params = [1E10, 0.7]
+        return t, xNGC, yNGC, zNGC, xSag, ySag, zSag, x_rel, y_rel, z_rel
 
+def plot_orbits(filename):
 
-def galactocentic(xyzMW, xyzSat):
-    """
-    Transforming to galactocentric coordinates
-    """
-    xyz_sat_gal = np.array([xyzSat[:,0]-xyzMW[:,0], \
-                           xyzSat[:,1]-xyzMW[:,1],\
-                           xyzSat[:,2]-xyzMW[:,2]]).T
-    return xyz_sat_gal
+    font = {'size':18, 'family':'serif'}
+    plt.matplotlib.rc('font', **font)
 
+    data = read_file(filename)
+    ncols = np.shape(data)[0]
+    print(ncols)
+    if ncols == 13:
+        t = data[0]
+        xNGC = data[1]
+        yNGC = data[2]
+        zNGC = data[3]
+        xSag = data[4]
+        ySag = data[5]
+        zSag = data[6]
+        xLMC = data[7]
+        yLMC = data[8]
+        zLMC = data[9]
+        x_rel = data[10]
+        y_rel = data[11]
+        z_rel = data[12]
 
-def NGC_Sgr_LMC_orbit(LMC_mod, satellite_model_sgr2):
-    t5, posLMC, velLMC, posMWsLMC, velMWsLMC, posNGCsLMC, velNGCsLMC,\
-    posSagLMC, velSagLMC = leapfrog.integrate_sat(4, pos_host,\
-    vel_host,host_model, disk_params, bulge_params, pos_sat=[-1,-41, -28],\
-    vel_sat=[-57,-226, 221], satellite_model=LMC_mod, pos_p=pos_NGC2419_2,\
-    vel_p=vel_NGC2419_2, dt=0.001, alpha=[0, 0.3], pos_sat2=sgr_pos,\
-    vel_sat2=sgr_vel, satellite_model2=satellite_model_sgr2)
+        fig = plt.figure(figsize=(14, 5))
+        plt.subplot(1, 2, 2)
+        plt.plot(t, np.sqrt(x_rel**2+y_rel**2+z_rel**2),\
+                 c='green', label='LMC', lw=2.)
+        plt.legend(fontsize=13)
+        plt.xlim(-5.4,0)
+        plt.ylabel('$R_{gal} (Kpc)$')
+        plt.xlabel('$Time (Gyrs)$')
 
-    posSag_GLMC = galactocentic(posMWsLMC, posSagLMC)
-    posNGC_GLMC = galactocentic(posMWsLMC, posNGCsLMC)
-    posLMC_GLMC = galactocentic(posMWsLMC, posLMC)
-    rel_d_sag_NGCLMC = galactocentic(posSagLMC, posNGCsLMC)
+        plt.subplot(1, 2, 1)
+        plt.plot(t, (xSag**2.0 + ySag**2.0 + \
+                 zSag**2.0)**0.5, label='$Sgr(+LMC)$', \
+                 c='b', lw=2.)
 
-    return t5, posNGC_GLMC, posSag_GLMC, posLMC_GLMC, rel_d_sag_NGCLMC
+        plt.plot(t, (xNGC**2.0 + yNGC**2.0 + \
+                 zNGC**2.0)**0.5, label='$NGC2419(+Sgr+LMC)$',\
+                 c='darkorange', lw=2.)
+        plt.plot(t, (xLMC**2.0 + yLMC**2.0 +\
+                 zLMC**2.0)**0.5, alpha=0.5, c='k',\
+                 label='$LMC$', lw=2.)
 
+        plt.ylim(0, 160)
 
-LMC_Ms = [3E10]#, 1E11,  2.5E11]
-LMC_as = [3.0]#, 12.7,  25.2]
-
-fig = plt.figure(figsize=(14, 5))
-for i in range(len(LMC_Ms)):
-    LMC_mod1 = ['hernquist', LMC_Ms[i], LMC_as[i]]
-    time, posNGC, posSag, posLMC, relNGCSAG = NGC_Sgr_LMC_orbit(LMC_mod1, satellite_model_sgr2)
-    plt.subplot(1, 2, 2)
-    plt.plot(time,np.sqrt(relNGCSAG[:,0]**2+relNGCSAG[:,1]**2+relNGCSAG[:,2]**2),\
-             c='green', label='LMC{}'.format(str(i+1)), lw=(6-i)/2.)
-    plt.legend(fontsize=13)
-    plt.xlim(-5.4,0)
-    plt.ylabel('$R_{gal} (Kpc)$')
-    plt.xlabel('$Time (Gyrs)$')
-    plt.title('$Massari+16$')
-
-    plt.subplot(1, 2, 1)
-    plt.plot(time, (posSag[:,0]**2.0 + posSag[:,1]**2.0 + \
-             posSag[:,2]**2.0)**0.5, label='$Sgr(+LMC)$', \
-             c='b', lw=(6-i)/2.)
-
-    plt.plot(time, (posNGC[:,0]**2.0 + posNGC[:,1]**2.0 + \
-             posNGC[:,2]**2.0)**0.5, label='$NGC2419(+Sgr+LMC)$',\
-             c='darkorange', lw=(6-i)/2.)
-    plt.plot(time, (posLMC[:,0]**2.0 + posLMC[:,1]**2.0 +\
-             posLMC[:,2]**2.0)**0.5, alpha=0.5, c='k',\
-             label='$LMC$', lw=(6-i)/2.)
-
-    plt.ylim(0, 160)
-    #plt.legend(loc='best', ncol=2, fontsize=14)
-    plt.ylabel('$R_{gal} (Kpc)$')
-    plt.xlabel('$Time (Gyrs)$')
-
-#plt.savefig('gal_orbits_all_LMCs_massari.pdf', dpi=300, bbox_inches='tight')
+        plt.ylabel('$R_{gal} (Kpc)$')
+        plt.xlabel('$Time (Gyrs)$')
+        return fig
+        #plt.savefig('gal_orbits_all_LMCs_massari.pdf', dpi=300, bbox_inches='tight')

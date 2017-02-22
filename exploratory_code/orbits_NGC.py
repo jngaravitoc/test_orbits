@@ -1,5 +1,5 @@
 import numpy as np
-from soda import *
+import soda
 import sys
 
 
@@ -28,12 +28,13 @@ def NGC_Sgr_LMC_orbit(time, Host_model, disk_params,  Sag_model, LMC_model,\
     LMC_IC_vel):
 
     t5, posLMC, velLMC, posMWsLMC, velMWsLMC, posNGCsLMC, velNGCsLMC,\
-    posSagLMC, velSagLMC = leapfrog.integrate_sat(time, pos_host,\
+    posSagLMC, velSagLMC = soda.leapfrog.integrate_sat(time, pos_host,\
     vel_host, Host_model, disk_params, bulge_params,alpha=[0, 0.3],\
-    dt=0.001, pos_sat=LMC_IC_pos,\
+    dt=0.1, pos_sat=LMC_IC_pos,\
     vel_sat=LMC_IC_vel, satellite_model=LMC_model, pos_p=NGC_IC_pos,\
     vel_p=NGC_IC_vel, pos_sat2=Sag_IC_pos,\
-    vel_sat2=Sag_IC_vel, satellite_model2=satellite_model_sgr2)
+    vel_sat2=Sag_IC_vel, \
+    satellite_model2 = Sag_model)
 
     posSag_GLMC = galactocentic(posMWsLMC, posSagLMC)
     posNGC_GLMC = galactocentic(posMWsLMC, posNGCsLMC)
@@ -42,6 +43,8 @@ def NGC_Sgr_LMC_orbit(time, Host_model, disk_params,  Sag_model, LMC_model,\
     velSag_GLMC = galactocentic(velMWsLMC, velSagLMC)
     velNGC_GLMC = galactocentic(velMWsLMC, velNGCsLMC)
     velLMC_GLMC = galactocentic(velMWsLMC, velLMC)
+    
+    del(Sag_model)
 
     return t5, posNGC_GLMC, velNGC_GLMC, posSag_GLMC, velSag_GLMC,\
            posLMC_GLMC, velLMC_GLMC, rel_d_sag_NGCLMC
@@ -49,7 +52,7 @@ def NGC_Sgr_LMC_orbit(time, Host_model, disk_params,  Sag_model, LMC_model,\
 
 def NGC_Sgr_orbit(time, Host_model, disk_params, Sag_model, NGC_IC_pos, NGC_IC_vel, Sag_IC_pos, Sag_IC_vel):
     t2, posSag2, velSag2, posMWs2, velMWs2, posNGCs2, velNGCs2 =\
-    leapfrog.integrate_sat(time, pos_host, vel_host, Host_model,\
+    soda.leapfrog.integrate_sat(time, pos_host, vel_host, Host_model,\
     disk_params, bulge_params, pos_p=NGC_IC_pos, vel_p=NGC_IC_vel,\
     dt=0.001,  alpha=[0, 0.3], pos_sat=Sag_IC_pos, vel_sat=Sag_IC_vel,\
     satellite_model=satellite_model_sgr2)
@@ -113,17 +116,26 @@ if __name__ == "__main__":
     LMC_as = [3.0, 12.7,  25.2]
 
 
-    sgr_pos = [16.1, 2.35, -6.12]
-    sgr_vel = [242.5, 5.6, 228.1]
+    sgr_pos = np.array([16.1, 2.35, -6.12])
+    sgr_vel = np.array([242.5, 5.6, 228.1])
 
 
-    pos_NGC2419 = [-87.43, -0.51, 37.31]
-    vel_NGC2419 = [16.55, 48.46, -31.33]
+    ics = np.loadtxt('mc2.ngc2419')
+
+    pos = [[i,j,k] for i,j,k in zip(ics[:,2], ics[:,3], ics[:,4])]
+    vel = [[i,j,k] for i,j,k in zip(ics[:,5], ics[:,6], ics[:,7])]
+
+    assert(len(pos)==10000)
+    assert(len(vel)==10000)
+
+    #pos_NGC2419 = [-87.43, -0.51, 37.31]
+    #vel_NGC2419 = [16.55, 48.46, -31.33]
 
     #pos_NGC2419_2 = [-79.1-8.3, -0.5, 37.4-0.014]
     #vel_NGC2419_2 = [-32.6+11.1, -177.2+240.24, -119.3+7.25]
 
 
+    LMC_model =  ['hernquist', LMC_Ms[0], LMC_as[0]]
     lmc_pos = [-1, -41, -28]
     lmc_vel = [-57, -226, 221]
 
@@ -149,26 +161,19 @@ if __name__ == "__main__":
 
 
     elif sys.argv[1] == 'MWlSgrLMC':
-        satellite_model_sgr2 = ['NFW', 1E10, 44, 8]
-        for i in range(1,len(LMC_Ms)):
-            print('Integrating with a MW of {} + Sgr + LMC of{}'.format(host_model_l[0],\
-                   str(LMC_Ms[i])))
-
-            sgr_pos = [16.1, 2.35, -6.12]
-            sgr_vel = [242.5, 5.6, 228.1]
-
-            LMC_model =  ['hernquist', LMC_Ms[i], LMC_as[i]]
+        for i in range(len(pos)):
+            satellite_model_sgr2 = ['NFW', 1E10, 44, 8]
             time, posNGC, velNGC, posSag, velSag, posLMC, velLMC, \
             relNGCSAG = NGC_Sgr_LMC_orbit(time, host_model_l, disk_params_h,\
-            satellite_model_sgr2, LMC_model, pos_NGC2419, vel_NGC2419, sgr_pos, sgr_vel,\
+            satellite_model_sgr2, LMC_model, pos[i], vel[i], sgr_pos, sgr_vel,\
             lmc_pos, lmc_vel)
-            output_file('MWlLMC{}Sgr.txt'.format(str(i)), time, posNGC, velNGC, posSag, velSag, relNGCSAG, posLMC = posLMC, velLMC = velLMC)
+            output_file('MWlLMC0Sgr_ICs{}.txt'.format(str(i)), time, posNGC, velNGC, posSag, velSag, relNGCSAG, posLMC = posLMC, velLMC = velLMC)
+            del(satellite_model_sgr2)
 
     elif sys.argv[1] == 'MWhSgrLMC':
         satellite_model_sgr2 = ['NFW', 1E10, 44, 8]
 
         for i in range(len(LMC_Ms)):
-            LMC_model =  ['hernquist', LMC_Ms[i], LMC_as[i]]
             time, posNGC, velNGC, posSag, velSag, posLMC, velLMC, \
             relNGCSAG = NGC_Sgr_LMC_orbit(time, host_model_h, disk_params_l,\
             satellite_model_sgr2, LMC_model,  pos_NGC2419, vel_NGC2419, sgr_pos, sgr_vel,\

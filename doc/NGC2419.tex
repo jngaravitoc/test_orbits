@@ -12,13 +12,21 @@
 \maketitle
 
 
-In this document different dynamical models of \textbf{NGC2419} are explored.
+In this document different dynamical models of \textbf{NGC2419} are explored
+in the presence of the Sagittarius dwarf galaxy (Sgr) and the Large
+Magellanic cloud (LMC). The document is structured as follows, in section
+\ref{sec:test} the code to compute the orbits is tested with the
+public available code \textsc{GalPy}, in section \ref{sec:NGC} the
+orbits of NGC2419 are integrating around a spherical MW potential,
+in section \ref{sec:NGCSgr} orbits of NGC2419 are integrated in a
+spherical MW potential and including the presence of Sgr.
+ In the las section the orbit of NGC2419 are integrating
+with both the presence of Sgr and the LMC.
 
-
-\section{Testing the code:}
+\section{Testing the code:}\label{sec:test}
 
 A test particle integrated in an NFW profile both with \textsc{Galpy}
-and the code developed in this work.
+and the code developed for this work.
 
 \begin{figure}[H]
 \centering
@@ -26,40 +34,72 @@ and the code developed in this work.
 \end{figure}
 
 
-\section{The orbit of NGC2419 around the MW}
+\section{The orbit of NGC2419 around the MW}\label{sec:NGC}
 
-\begin{table}
+Table 1 summarizes the MW models used in the following orbit analyzes.
+
+\begin{table}[H]
 \centering
 \begin{tabular}{c c c c c}
 \hline
 \hline
 \textbf{Models:} & & & & \\
 \hline
+\textbf{Model 1:} & & & & \\
 Halo: & NFW & $M_{vir} = 1\times 10^{12} M_{\odot}$ & $c=9.86$  \\
 Disk: & Miyamoto-Nagai & $M_{d} = 6.5\times10^{10} M_{\odot}$ & $r_L = 3.5 kpc$ & $r_H = 0.53 kpc$ \\
 Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
 \hline
+\textbf{Model 2:} & & & & \\
+Halo: & NFW & $M_{vir} = 1.5\times 10^{12} M_{\odot}$ & $c=9.56$  \\
+Disk: & Miyamoto-Nagai & $M_{d} = 6.5\times10^{10} M_{\odot}$ & $r_L = 3.5 kpc$ & $r_H = 0.53 kpc$ \\
+Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
+\hline
+\textbf{Model 3:} & & & & \\
+Halo: & Triaxial NFW & $M_{vir} = 1.45\times 10^{12} M_{\odot}$ &
+$c=20$  & $q=0.8$, $s=1$. \\
+Disk: & Miyamoto-Nagai & $M_{d} = 4\times10^{10} M_{\odot}$ & $r_L = 3.5 kpc$ & $r_H = 0.53 kpc$ \\
+Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
+\hline
 \hline
 \end{tabular}
-\caption{Milky Way model parameters.}
+\caption{Milky Way model parameters}
 \end{table}
 
-Using the MW model resumed in table 1 the 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.2]{../exploratory_code/NGC2419_sphMW.pdf}
-\caption{In a spherical MW halo}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.2]{../exploratory_code/NGC2419_Triaxial_MW.pdf}
-\caption{In a triaxial MW halo}
+\includegraphics[scale=0.3]{../exploratory_code/NGC2419_sphMW.pdf}
+\caption{Orbits of NGC2419 using Model 1, blue line correspond to
+the orbit using Tonys proper motions measurements while the orange line correspond to
+Massari16 proper motion.}
 \end{figure}
 
 A 3D visualization of this plot can be found 
-\href{https://plot.ly/~jngc/3/orbits/?share_key=FcyuVOnd0LYVXaYhGmSuo9}{here}
+\href{https://plot.ly/~jngc/3/orbits/?share_key=FcyuVOnd0LYVXaYhGmSuo9}{here},
+in this plot is easily seen that the plane of the orbit for the two
+different proper motions are very different.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{../exploratory_code/NGC2419_sphMW.pdf}
+\caption{Orbits of NGC2419 using Model 2, blue line correspond to
+the orbit using Tonys proper motions measurements while the orange line correspond to
+Massari16 proper motion.\label{fig:model2MW}}
+\end{figure}
+
+Figure \ref{fig:model2MW} shows how the period of the orbit decreases
+with increasing the halo mass, in particular for the orbit with the
+new proper motions.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{../exploratory_code/NGC2419_Triaxial_MW.pdf}
+\caption{Orbits of NGC2419 using model 3. This is the MW model used by
+Massari et al 2016.}
+\end{figure}
+
 
 
 \section{The orbit of NGC2419 around the MW with Sgr}
@@ -67,7 +107,7 @@ A 3D visualization of this plot can be found
 Including the Sagittarius (Sgr) dwarf galaxy:
 
 
-\begin{table}
+\begin{table}[H]
 \centering
 \begin{tabular}{c c c c c}
 \hline

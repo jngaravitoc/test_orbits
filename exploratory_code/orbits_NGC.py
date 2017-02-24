@@ -120,13 +120,13 @@ if __name__ == "__main__":
     sgr_vel = np.array([242.5, 5.6, 228.1])
 
 
-    #ics = np.loadtxt('mc2.ngc2419')
+    ics = np.loadtxt('mc2.ngc2419')
 
-    #pos = [[i,j,k] for i,j,k in zip(ics[:,2], ics[:,3], ics[:,4])]
-    #vel = [[i,j,k] for i,j,k in zip(ics[:,5], ics[:,6], ics[:,7])]
+    pos = [[i,j,k] for i,j,k in zip(ics[:,2], ics[:,3], ics[:,4])]
+    vel = [[i,j,k] for i,j,k in zip(ics[:,5], ics[:,6], ics[:,7])]
 
-    #assert(len(pos)==10000)
-    #assert(len(vel)==10000)
+    assert(len(pos)==10000)
+    assert(len(vel)==10000)
 
     pos = [-87.43, -0.51, 37.31]#NGC2419
     vel = [16.55, 48.46, -31.33]#NGC2419

@@ -25,7 +25,7 @@ with both the presence of Sgr and the LMC.
 
 \section{Testing the code:}\label{sec:test}
 
-A test particle integrated in an NFW profile both with \textsc{Galpy}
+A test particle integrated in a NFW profile both with \textsc{Galpy}
 and the code developed for this work.
 
 \begin{figure}[H]
@@ -66,6 +66,10 @@ Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
 \caption{Milky Way model parameters}
 \end{table}
 
+I'm assuming $q=b/a$, $s=c/a$, $a>b>c$, \textit{In Massari+17 they
+mention that $q=0.8$ , but in Hayashi07 they use c/a=0.8 therfore I
+think there is a notation problem regardin weather q=0.8 or s=0.8 }
+
 
 \begin{figure}[H]
 \centering
@@ -75,9 +79,9 @@ the orbit using Tonys proper motions measurements while the orange line correspo
 Massari16 proper motion.}
 \end{figure}
 
-A 3D visualization of this plot can be found 
-\href{https://plot.ly/~jngc/3/orbits/?share_key=FcyuVOnd0LYVXaYhGmSuo9}{here},
-in this plot is easily seen that the plane of the orbit for the two
+The angle between this orbits is $35.7^{\circ}$ this is best seen in
+\href{https://plot.ly/~jngc/3/orbits/?share_key=FcyuVOnd0LYVXaYhGmSuo9}{this}
+3D visualization. This plot also showis easily seen that the plane of the orbit for the two
 different proper motions are very different.
 
 \begin{figure}[H]
@@ -104,7 +108,17 @@ Massari et al 2016.}
 
 \section{The orbit of NGC2419 around the MW with Sgr}
 
-Including the Sagittarius (Sgr) dwarf galaxy:
+In this section we include the effect of the Sagittarius (Sgr) dwarf
+galaxy, to this aim we integrate the orbit from the present time. In
+this 3-body interaction the MW is free to move due to the
+gravitational interaction with Sgr. NGC 2419 feels both the force
+from the MW and Sgr. To model the orbit of Sgr we include the dynamic
+friction effect by implementing the Chandrasekhar equation, the
+Coulomb Logarithm is modified following a similar procedure as the one
+in Van Der Marel (XX) in order to account for extended satellites in 
+order to reproduce the orbit of Sag from N-body simulations such as 
+Diercxx. The model used to represent Sgr is summarized in table
+\ref{tab:Sgrmodel}.
 
 
 \begin{table}[H]
@@ -116,14 +130,41 @@ Halo: & NFW & $M_{vir} = 1\times 10^{10} M_{\odot}$ & $c=8$  \\
 \hline
 \hline
 \end{tabular}
-\caption{Sagittarius dwarf model.}
+\caption{Sagittarius dwarf model.\label{tab:Sgrmodel}}
 \end{table}
 
+
+Figure \ref{fig:Sgrmodel1} shows the orbit of NGC2419 (Organge) in the
+presence of Sgr (Blue), the orbit of NGC2419 using the old proper
+motion measurement is shown in green, the blue line shows the tidal
+radius of Sgr $r_t = r_{peri} (M_{sat}/(2*M_{MW(r_{peri})}))^{1/3}$.
+The angle between the orbits of NGC2419 and Sgr is $55.59$ while the
+angle between the plane of the orbit for the old NGC2419  and Sgr is
+$24.68$.
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{../exploratory_code/NGC2419_sphMWSGR.pdf}
+\caption{Right: Orbits of NGC2419 (orange), Sgr (blue), and NGC2419
+with Massari+17 proper motion. Left: Distance between NGC2419 and Sgr
+as function of time for the new (solid line) and old proper motion
+(dashed). \label{fig:Sgrmodel1}}
 \end{figure}
+
+A 3D visualization of this plots can be found \href{https://plot.ly/~jngc/22/orbits/}{here}
+
+Figure \ref{fig:Sgrmodel2} the same as in figure \ref{fig:Sgrmodel1}
+but using model 2.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{../exploratory_code/NGC2419_sphMWhSGR.pdf}
+\caption{\label{fig:Sgrmmodel2}}
+\end{figure}
+
+The orbit of Sgr in model 1 and in model 2 is in the same plane.
+\href{https://plot.ly/~jngc/25/orbits/}{here}
+
 
 
 \section{The orbit of NGC2419 around the MW with Sgr and the LMC}

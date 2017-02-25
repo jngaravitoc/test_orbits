@@ -114,15 +114,20 @@ if __name__ == "__main__":
     t_min_rel = np.zeros(N_files)
     peris = np.zeros(N_files)
     apos = np.zeros(N_files)
+    f = open('results.txt','w')
 
     plt.figure(figsize=(10,5))
+    f.write('peris, apos, t_min_relative, r_relative, theta \n')
     for i in range(0,N_files):
        t, posNGC, velNGC, posSag, velSag, d_rel = load_orbit('../orbits/MWlLMC4Sgr_ICs{}.txt'.format(str(i)))
-       Theta[i-N_files] = angles(t, posNGC, velNGC, posSag, velSag)
-       t_min_rel[i-N_files] , r_rel_mins[i-N_files] = min_dist(t, d_rel)
+       Theta[i] = angles(t, posNGC, velNGC, posSag, velSag)
+       t_min_rel[i] , r_rel_mins[i] = min_dist(t, d_rel)
        NGC_r_G = np.sqrt(posNGC[:,0]**2 + posNGC[:,1]**2 + posNGC[:,2]**2)
-       peris[i-N_files] , apos[i-N_files] = orbit_properties(t, NGC_r_G)
+       peris[i] , apos[i] = orbit_properties(t, NGC_r_G)
+       f.write(("%f %f %f %f %f \n")%(peris[i], apos[i], t_min_rel[i], r_rel_mins[i], Theta[i]))
 
+    f.close()
+    """
     font = {'size':18, 'family':'serif'}
     plt.matplotlib.rc('font', **font)
 
@@ -131,18 +136,20 @@ if __name__ == "__main__":
     plt.scatter(t_min_rel, r_rel_mins, c='k', s=1, alpha=0.5)
     plt.ylabel('$Relative\ Distance [kpc]$')
     plt.xlabel(r'$t[Gyrs]$')
-
+    # tidal radius
+    plt.axhline(7.36)
 
     plt.subplot(2, 2, 2)
-    h = plt.hist(Theta, color='darkorange', rwidth=0.95, normed=True)
+    h = plt.hist(Theta, color='darkorange', rwidth=0.9, normed=True, bins=15)
     plt.xlabel(r'$\theta [^{\circ}]$')
 
 
     plt.subplot(2, 2, 3)
-    h2 = plt.hist(peris, color='purple', rwidth=0.95, normed=True)
+    h2 = plt.hist(peris, color='purple', rwidth=0.9, normed=True, bins=15)
     plt.xlabel('$r_{peri}[kpc]$')
 
     plt.subplot(2, 2, 4)
-    h3 = plt.hist(apos, color='k', rwidth=0.95, normed=True)
+    h3 = plt.hist(apos, color='k', rwidth=0.9, normed=True, bins=15)
     plt.xlabel('$r_{apo}[kpc]$')
     plt.savefig('model1_analysis.pdf', bbox_inches='tight', dpi=300)
+    """

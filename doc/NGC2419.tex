@@ -20,7 +20,7 @@ public available code \textsc{GalPy}, in section \ref{sec:NGC} the
 orbits of NGC2419 are integrating around a spherical MW potential,
 in section \ref{sec:NGCSgr} orbits of NGC2419 are integrated in a
 spherical MW potential and including the presence of Sgr.
- In the las section the orbit of NGC2419 are integrating
+ In the last section \ref{sec:NGCSgrLMC} the orbits of NGC2419 are integrating
 with both the presence of Sgr and the LMC.
 
 \section{Testing the code:}\label{sec:test}
@@ -68,33 +68,46 @@ Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
 
 I'm assuming $q=b/a$, $s=c/a$, $a>b>c$, \textit{In Massari+17 they
 mention that $q=0.8$ , but in Hayashi07 they use c/a=0.8 therfore I
-think there is a notation problem regardin weather q=0.8 or s=0.8 }
+think there is a notation problem regardinq the definition of $q$ and
+$s$ }\\
+
+Figure \ref{fig:model1MW} shows the projection of the orbits of
+NGC2419 for two different initial conditions (blue) using the new
+proper motion of Tony and orange using Massari+17 proper motion.
+The upper left panel shows the $Y-X$ plane, the upper middle panel
+shows the $Z-X$ plane and finally the $Z-Y$ plane is shown in the
+upper right panel. The bottom panel shows the galactocentric
+distances as a function of time. This two orbits are very different:
+The new orbit have a period of $\sim 1.7 Gyrs$ while the old orbit have a
+period of $\sim 2.5 gyrs$. The pericenter distances is $\sim 15 kpc$
+for the new orbit while for the old orbit is $\sim 65 kpc$.
+
+The angle between the orbital planes is $35.7^{\circ}$, this is best seen in
+\href{https://plot.ly/~jngc/3/orbits/?share_key=FcyuVOnd0LYVXaYhGmSuo9}{this}
+3D visualization.
 
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{../exploratory_code/NGC2419_sphMW.pdf}
 \caption{Orbits of NGC2419 using Model 1, blue line correspond to
-the orbit using Tonys proper motions measurements while the orange line correspond to
-Massari16 proper motion.}
+the orbit using Tony's proper motions measurements while the orange line correspond to
+Massari16 proper motion.\label{fig:model1MW}}
 \end{figure}
 
-The angle between this orbits is $35.7^{\circ}$ this is best seen in
-\href{https://plot.ly/~jngc/3/orbits/?share_key=FcyuVOnd0LYVXaYhGmSuo9}{this}
-3D visualization. This plot also showis easily seen that the plane of the orbit for the two
-different proper motions are very different.
+Figure \ref{fig:model2MW} shows the same of \ref{fig:model1MW} but for
+model 2. The period of the orbits, the pericenter and apocenter
+distances decreases in comparison to model 1 as expected. The orbital 
+
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{../exploratory_code/NGC2419_sphMW.pdf}
+\includegraphics[scale=0.3]{../exploratory_code/NGC2419_sphMW_h.pdf}
 \caption{Orbits of NGC2419 using Model 2, blue line correspond to
 the orbit using Tonys proper motions measurements while the orange line correspond to
 Massari16 proper motion.\label{fig:model2MW}}
 \end{figure}
 
-Figure \ref{fig:model2MW} shows how the period of the orbit decreases
-with increasing the halo mass, in particular for the orbit with the
-new proper motions.
 
 
 \begin{figure}[H]
@@ -106,7 +119,7 @@ Massari et al 2016.}
 
 
 
-\section{The orbit of NGC2419 around the MW with Sgr}
+\section{The orbit of NGC2419 around the MW with Sgr}\label{sec:NGCSgr}
 
 In this section we include the effect of the Sagittarius (Sgr) dwarf
 galaxy, to this aim we integrate the orbit from the present time. In
@@ -167,7 +180,8 @@ The orbit of Sgr in model 1 and in model 2 is in the same plane.
 
 
 
-\section{The orbit of NGC2419 around the MW with Sgr and the LMC}
+\section{The orbit of NGC2419 around the MW with Sgr and the
+LMC}\label{sec:NGCSgrLMC}
 
 LMC masses: $[3\times10^{10}, 5\times10^{10}, 8\times10^{10},
 1\times10^{10}, 1.8\times10^{11}, 2.5\times10^{11}]$
@@ -198,13 +212,21 @@ LMC masses: $[3\times10^{10}, 5\times10^{10}, 8\times10^{10},
 \end{figure}
 
 
-
-
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{../exploratory_code/gal_orbits_all_LMCs_massari.pdf}
 \caption{NGC2419 IC taken from Massari+16 proper motion.}
 \end{figure}
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{../exploratory_code/model1_analysis.pdf}
+\caption{NGC2419 IC taken from Massari+16 proper motion.}
+\end{figure}
+
+% LMC + Sgr triaxial
 
 \section{The orbit of NGC2419 around the MW in a NFW triaxial
 potential with the LMC}

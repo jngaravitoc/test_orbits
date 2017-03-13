@@ -67,6 +67,17 @@ def NGC_Sgr_orbit(time, Host_model, disk_params, Sag_model, NGC_IC_pos, NGC_IC_v
 
     return t2, posNGC_G, velNGC_G, posSag_G, velSag_G, rel_d_sag_NGC
 
+
+def NGC_orbit(time, Host_model, disk_params, NGC_IC_pos, NGC_IC_vel):
+    point_p_model = ['NFW', 0.0, 0, 0]
+    t2, posNGCG, velNGCG, posMWs2, velMWs2 =\
+    soda.leapfrog.integrate_sat(time, pos_host, vel_host, Host_model,\
+    disk_params, bulge_params, dt=0.001, alpha=[0,0],\
+    pos_sat=NGC_IC_pos, vel_sat=NGC_IC_vel, satellite_model=point_p_model)
+
+    return t2, posNGCG, velNGCG, posMWs2, velMWs2
+
+
 def output_file(filename, time, posNGC, velNGC, posSag, velSag, rel, **kwargs):
     extract(kwargs)
     if 'posLMC' in kwargs:
@@ -128,8 +139,8 @@ if __name__ == "__main__":
     assert(len(pos)==10000)
     assert(len(vel)==10000)
 
-    pos = [-87.43, -0.51, 37.31]#NGC2419
-    vel = [16.55, 48.46, -31.33]#NGC2419
+    #pos = [-87.43, -0.51, 37.31]#NGC2419
+    #vel = [16.55, 48.46, -31.33]#NGC2419
 
     #pos_NGC2419_2 = [-79.1-8.3, -0.5, 37.4-0.014]
     #vel_NGC2419_2 = [-32.6+11.1, -177.2+240.24, -119.3+7.25]
@@ -141,8 +152,17 @@ if __name__ == "__main__":
     lmc_vel = [-57, -226, 221]
 
     satellite_model_sgr2 = ['NFW', 1E10, 44, 8]
+
     if sys.argv[1] == 'MW':
         print('orbtis around the MW')
+
+    elif sys.argv[1] == 'MWlNGC':
+        for i in range(len(pos)):
+            time, posNGC, velNGC, posMW, velMW = \
+            NGC_orbit(T, host_model_l, disk_params_h, pos[i], vel[i])
+
+            output_file('MWlSgr_ICs{}.txt'.format(str(i)), time, posNGC,\
+            velNGC, posMW, velMW, np.ones([len(time), 3]))
 
     elif sys.argv[1] == 'MWlSgr':
         for i in range(len(pos)):

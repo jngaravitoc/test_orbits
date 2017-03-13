@@ -7,7 +7,7 @@
 \usepackage{hyperref}
 
 \title{Dynamical model of NGC2419}
-\author{Nicolas Garavito-Camargo}
+\author{Nicolas Garavito-Camargo \& Gurtina Besla}
 \begin{document}
 \maketitle
 
@@ -36,7 +36,7 @@ and the code developed for this work.
 
 \section{The orbit of NGC2419 around the MW}\label{sec:NGC}
 
-Table 1 summarizes the MW models used in the following orbit analyzes.
+Table 1 summarizes the MW model used in the following orbit analyzes.
 
 \begin{table}[H]
 \centering
@@ -49,17 +49,17 @@ Table 1 summarizes the MW models used in the following orbit analyzes.
 Halo: & NFW & $M_{vir} = 1\times 10^{12} M_{\odot}$ & $c=9.86$  \\
 Disk: & Miyamoto-Nagai & $M_{d} = 6.5\times10^{10} M_{\odot}$ & $r_L = 3.5 kpc$ & $r_H = 0.53 kpc$ \\
 Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
-\hline
-\textbf{Model 2:} & & & & \\
-Halo: & NFW & $M_{vir} = 1.5\times 10^{12} M_{\odot}$ & $c=9.56$  \\
-Disk: & Miyamoto-Nagai & $M_{d} = 6.5\times10^{10} M_{\odot}$ & $r_L = 3.5 kpc$ & $r_H = 0.53 kpc$ \\
-Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
-\hline
-\textbf{Model 3:} & & & & \\
-Halo: & Triaxial NFW & $M_{vir} = 1.45\times 10^{12} M_{\odot}$ &
-$c=20$  & $q=0.8$, $s=1$. \\
-Disk: & Miyamoto-Nagai & $M_{d} = 4\times10^{10} M_{\odot}$ & $r_L = 3.5 kpc$ & $r_H = 0.53 kpc$ \\
-Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
+%\hline
+%\textbf{Model 2:} & & & & \\
+%Halo: & NFW & $M_{vir} = 1.5\times 10^{12} M_{\odot}$ & $c=9.56$  \\
+%Disk: & Miyamoto-Nagai & $M_{d} = 6.5\times10^{10} M_{\odot}$ & $r_L = 3.5 kpc$ & $r_H = 0.53 kpc$ \\
+%Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
+%\hline
+%\textbf{Model 3:} & & & & \\
+%Halo: & Triaxial NFW & $M_{vir} = 1.45\times 10^{12} M_{\odot}$ &
+%$c=20$  & $q=0.8$, $s=1$. \\
+%Disk: & Miyamoto-Nagai & $M_{d} = 4\times10^{10} M_{\odot}$ & $r_L = 3.5 kpc$ & $r_H = 0.53 kpc$ \\
+%Bulge: & Hernquist & $M_b = 1 \times 10^{10} M_{\odot}$ & $r_s=0.7 kpc$ & \\
 \hline
 \hline
 \end{tabular}
@@ -95,20 +95,7 @@ the orbit using Tony's proper motions measurements while the orange line corresp
 Massari16 proper motion.\label{fig:model1MW}}
 \end{figure}
 
-Figure \ref{fig:model2MW} shows the same of \ref{fig:model1MW} but for
-model 2. The period of the orbits, the pericenter and apocenter
-distances decreases in comparison to model 1 as expected. The orbital 
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.3]{../exploratory_code/NGC2419_sphMW_h.pdf}
-\caption{Orbits of NGC2419 using Model 2, blue line correspond to
-the orbit using Tonys proper motions measurements while the orange line correspond to
-Massari16 proper motion.\label{fig:model2MW}}
-\end{figure}
-
-
+Figure, shows for a trixial NFW....
 
 \begin{figure}[H]
 \centering
@@ -164,42 +151,80 @@ as function of time for the new (solid line) and old proper motion
 (dashed). \label{fig:Sgrmodel1}}
 \end{figure}
 
-A 3D visualization of this plots can be found \href{https://plot.ly/~jngc/22/orbits/}{here}
+A 3D visualization of this plot can be found \href{https://plot.ly/~jngc/22/orbits/}{here}
 
-Figure \ref{fig:Sgrmodel2} the same as in figure \ref{fig:Sgrmodel1}
-but using model 2.
+Finally, sampling the error space of the proper motions of both Sgr
+and NGC2419 with $10.000$ initial conditions we explore the properties
+of the orbits of NGC2419 for the MW model 1. Figure \ref{fig:all_sgr}
+summarize our results, The top left panel shows a histogram of the
+time in the orbit of Sgr at which NGC2419 could cross with Sgr or stripped out from Sgr.
+The positions on the orbit of Sgr (blue solid line) at which NGC2419 crosses within 
+the tidal radius of Sgr at the same time that Sgr is passing trough 
+that point in the orbit are shown with orange dots. The top right
+panel shows a histogram of polar angles between Sgr and NGC2419.
+Bottom left panel shows the histogram of the pericenter distance,
+while the apocenter distance is shown in the right bottom panel.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{../exploratory_code/NGC2419_sphMWhSGR.pdf}
-\caption{\label{fig:Sgrmmodel2}}
+\includegraphics[scale=0.5]{../exploratory_code/all_results_sgr.pdf}
+\caption{\label{fig:all_sgr}}
 \end{figure}
-
-The orbit of Sgr in model 1 and in model 2 is in the same plane.
-\href{https://plot.ly/~jngc/25/orbits/}{here}
-
 
 
 \section{The orbit of NGC2419 around the MW with Sgr and the
 LMC}\label{sec:NGCSgrLMC}
 
-LMC masses: $[3\times10^{10}, 5\times10^{10}, 8\times10^{10},
-1\times10^{10}, 1.8\times10^{11}, 2.5\times10^{11}]$
+In this section we explore the orbital history of NGC2419 
+in the presence of Sgr and the LMC. 
+The LMC models are summarized in table \ref{tab:LMCmodels}.
 
 
+\begin{table}[H]
+\centering
+\begin{tabular}{c c c c c}
+\hline
+\hline
+Model & Halo potential & $M_{vir} \times 10^{10}M_{\odot}$ & $r_s$ kpc  & \\
+LMC1 & Hernquist & $3 $ & $8$  \\
+LMC2 & Hernquist & $5 $ & $8$  \\
+LMC3 & Hernquist & $8 $ & $8$  \\
+LMC4 & Hernquist & $10 $ & $8$  \\
+LMC5 & Hernquist & $18 $ & $8$  \\
+LMC6 & Hernquist & $25 $ & $8$  \\
+\hline
+\hline
+\end{tabular}
+\caption{LMC  models\label{tab:LMCmodels}}
+\end{table}
+
+
+Figure \ref{fig:MWlSgrl} left panel shows the orbits of NGC2419, Sgr and the LMC,
+orange, blue and gray respectively with the
+LMC (solid lines) and without (dashed lines) for the MW model 1. This figure shows how
+the period of Sag decreases and the period of NGC2419 increases thus making
+the difference between their periods larger. Right panel shows the
+distance between NGC2419 and Sgr at different times, the dashed line
+exclude the effect of the LMC.
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{../exploratory_code/NGC2419_sphMWSGRLMC.pdf}
-\caption{For the lightest LMC and lightest Sag.}
+\caption{Model 1 with LMC1 and lightest Sag.\label{fig:MWlSgrl}}
 \end{figure}
 
+Figure \ref{fig:MWlSgrh} is the same as figure \ref{fig:MWlSgrl} but
+with a heavy Sgr of mass $1\times 10^{11}M_{\odot.}$
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{../exploratory_code/NGC2419_sphMWHSGRLMC.pdf}
-\caption{for the lightest LMC and Heavy Sag.}
+\caption{for the lightest LMC and Heavy Sag.\label{fig:MWlSgrh}}
 \end{figure}
+
+Figure \ref{MWlSgrLMCs} is similar to \ref{fig:MWlSgrl} but for the
+six models of the LMC, the thiner the lines the more massive the LMC.
+
 
 \begin{figure}[H]
 \centering
@@ -209,43 +234,23 @@ LMC masses: $[3\times10^{10}, 5\times10^{10}, 8\times10^{10},
 \begin{minipage}{0.45\linewidth}
 \includegraphics[scale=0.5]{../exploratory_code/d_rel_all_LMCs.pdf}
 \end{minipage}
+\caption{Left: Galactocentric distances for NGC2419, Sgr and the LMC (Blue,
+orange and black respectively. Right: Relative distances between
+NGC2419 and Sgr.)\label{fig:MWlSgrLMCs}}
 \end{figure}
 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{../exploratory_code/gal_orbits_all_LMCs_massari.pdf}
-\caption{NGC2419 IC taken from Massari+16 proper motion.}
-\end{figure}
-
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.5]{../exploratory_code/model1_analysis.pdf}
-\caption{NGC2419 IC taken from Massari+16 proper motion.}
-\end{figure}
-
-% LMC + Sgr triaxial
-
-\section{The orbit of NGC2419 around the MW in a NFW triaxial
-potential with the LMC}
-
-
-The new potential is a NFW with $c=20$, $q=0.8$ and $s=1$ following
-Massari+16.
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.5]{../exploratory_code/gal_orbits_all_LMCs_Triaxial.pdf}
-On the right panel the thickness of the line represent a higher mass
-LMC
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.5]{../exploratory_code/gal_orbits_all_LMCs_massari_T.pdf}
-\caption{NGC2419 IC taken from Massari+16 proper motion.}
+\includegraphics[scale=0.5]{../exploratory_code/all_results_sgrlmc.pdf}
+\caption{Results using 10000 orbits integrated from sampling the
+error space for NGC2419 and Sgr. Top left panel shows the minimum
+distance that NGC2419 gets to Sgr at a given time, the blue horizontal
+line represents the Sgr tidal radius. Top right panel shows an
+histogram of the orbital poles angle of NGC2419 and Sgr. Bottom left
+panel shows a histogram of the pericenter distance of NGC2419 and
+the bottom wight panel shows a histogram of the apocenter
+distance.}
 \end{figure}
 
 \end{document}

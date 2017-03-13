@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
-
-def load_orbit(filename):
+def load_orbit(filename, lmc):
     data = np.loadtxt(filename)
 
     t = data[:,0]
@@ -23,9 +23,16 @@ def load_orbit(filename):
     vy_sag = data[:,11]
     vz_sag = data[:,12]
 
-    x_rel = data[:,19]
-    y_rel = data[:,20]
-    z_rel = data[:,21]
+
+    if lmc==1:
+        x_rel = data[:,19]
+        y_rel = data[:,20]
+        z_rel = data[:,21]
+
+    if lmc==0:
+        x_rel = data[:,13]
+        y_rel = data[:,14]
+        z_rel = data[:,15]
 
     r_ngc = np.array([x_ngc, y_ngc, z_ngc]).T
     v_ngc = np.array([vx_ngc, vy_ngc, vz_ngc]).T
@@ -98,33 +105,56 @@ def orbit_properties(t, R_sag):
             t_apo.append(t[i])
 
     N_peris = len(t_peri)
-    N_apos = len(t_apo)
+    N_apos = len(t_apo) 
+    period_peri = np.abs(t_peri[1]) - np.abs(t_peri[0])
+    period_apo= np.abs(t_apo[1]) - np.abs(t_apo[0])
 
-    #return N_peris, t_peri, np.mean(r_peri), N_apos, t_apo, np.mean(r_apo)
 
-    return np.mean(r_peri), np.mean(r_apo)
+    return t_peri[0], r_peri[0], t_apo[0], r_apo[0], period_peri, period_apo
+
+    #return np.mean(r_peri), np.mean(r_apo)
 
 
 if __name__ == "__main__": 
 
-    N_files = 10000
+    #N_files = 10000
+
+    lmc=int(sys.argv[1])
+    path = sys.argv[2]
+    file_name = sys.argv[3]
+    out_name = sys.argv[4]
+
+    with open(path+file_name) as f:
+       name = f.read().splitlines()
+
+    N_files = len(name)
 
     Theta = np.zeros(N_files)
     r_rel_mins = np.zeros(N_files)
     t_min_rel = np.zeros(N_files)
-    peris = np.zeros(N_files)
-    apos = np.zeros(N_files)
-    f = open('results.txt','w')
+    r_peri = np.zeros(N_files)
+    t_peri = np.zeros(N_files)
+    r_apo = np.zeros(N_files)
+    t_apo = np.zeros(N_files)
+    p_apo = np.zeros(N_files)
+    p_peri = np.zeros(N_files)
 
-    plt.figure(figsize=(10,5))
-    f.write('peris, apos, t_min_relative, r_relative, theta \n')
-    for i in range(0,N_files):
-       t, posNGC, velNGC, posSag, velSag, d_rel = load_orbit('../orbits/MWlLMC4Sgr_ICs{}.txt'.format(str(i)))
+
+    #plt.figure(figsize=(10,5))
+
+    with open(path+file_name) as f:
+       name = f.read().splitlines()
+    f.close()
+
+    f = open(out_name,'w')
+    f.write('#t_peri, r_perim t_apo, r_apo, p_peri, p_apo, t_min_rel, r_rel_min, theta \n')
+    for i in range(len(name)):
+       t, posNGC, velNGC, posSag, velSag, d_rel = load_orbit(path+name[i], lmc)
        Theta[i] = angles(t, posNGC, velNGC, posSag, velSag)
        t_min_rel[i] , r_rel_mins[i] = min_dist(t, d_rel)
        NGC_r_G = np.sqrt(posNGC[:,0]**2 + posNGC[:,1]**2 + posNGC[:,2]**2)
-       peris[i] , apos[i] = orbit_properties(t, NGC_r_G)
-       f.write(("%f %f %f %f %f \n")%(peris[i], apos[i], t_min_rel[i], r_rel_mins[i], Theta[i]))
+       t_peri[i], r_peri[i], t_apo[i], r_apo[i], p_peri[i], p_apo[i] = orbit_properties(t, NGC_r_G)
+       f.write(("%f %f %f %f %f %f %f %f %f \n")%(t_peri[i], r_peri[i], t_apo[i], r_apo[i], p_peri[i], p_apo[i], t_min_rel[i], r_rel_mins[i], Theta[i]))
 
     f.close()
     """

@@ -63,12 +63,11 @@ def angular_m(r, v):
 def angles(t, r1, v1, r2, v2):
     L_NGC = angular_m(r1, v1)
     L_sag = angular_m(r2, v2)
-    orb_dot = np.zeros(len(t))
     norm_NGC = np.linalg.norm(L_NGC)
     norm_sag = np.linalg.norm(L_sag)
     orb_dot = np.dot(L_NGC/norm_NGC, L_sag/norm_sag)
-    theta =  np.arccos(orb_dot)*180/np.pi
-    return np.mean(theta)
+    theta =  np.arccos(orb_dot)*180./np.pi
+    return theta
 
 
 def min_dist(t, drel):
@@ -175,6 +174,22 @@ def orbit_properties(t, R_sag):
 
     #return np.mean(r_peri), np.mean(r_apo)
 
+def read_sgr_orbit(posNGC):
+    orbit_sgr = np.loadtxt('sgr_orbit.txt')
+    t_sgr = orbit_sgr[:,0]
+    x_sgr = orbit_sgr[:,1]
+    y_sgr = orbit_sgr[:,2]
+    z_sgr = orbit_sgr[:,3]
+
+    vx_sgr = orbit_sgr[:,4]
+    vy_sgr = orbit_sgr[:,5]
+    vz_sgr = orbit_sgr[:,6]
+
+    r_sgr = np.array([x_sgr, y_sgr, z_sgr]).T
+    v_sgr = np.array([vx_sgr, vy_sgr, vz_sgr]).T
+    d_rel = ((posNGC[:,0]-x_sgr)**2 +(posNGC[:,1]-y_sgr)**2 + (posNGC[:,2]-z_sgr)**2 )**0.5
+
+    return r_sgr, v_sgr, d_rel
 
 if __name__ == "__main__": 
 
@@ -211,8 +226,6 @@ if __name__ == "__main__":
     zNGC = ppms[:,4]
 
 
-    #plt.figure(figsize=(10,5))
-
     with open(path+file_name) as f:
        name = f.read().splitlines()
     f.close()
@@ -221,6 +234,9 @@ if __name__ == "__main__":
     f.write('#t_peri, r_perim t_apo, r_apo, p_peri, p_apo, t_min_rel, r_rel_min, theta \n')
     for i in range(len(name)):
        t, posNGC, velNGC, posSag, velSag, d_rel = load_orbit(path+name[i], lmc)
+
+       if ((posSag[0,0]==0) & (posSag[0,1]==0) & (posSag[0,2]==0)):
+           posSag, velSag, d_rel = read_sgr_orbit(posNGC)
 
        t_r_sag = tidal_radius_sag(posSag)
        t_enc, x_enc, y_enc, z_enc = encounters(t_r_sag, posSag, d_rel, t)
@@ -231,7 +247,9 @@ if __name__ == "__main__":
            enc = 0
        pmw_here, pmn_here = proper_motions(posNGC, xNGC, yNGC, zNGC, pmw, pmn)
        Theta[i] = angles(t, posNGC, velNGC, posSag, velSag)
+       #print(Theta[1], t[0], posNGC[0], velNGC[0], posSag[0], velSag[0])
        t_min_rel[i] , r_rel_mins[i] = min_dist(t, d_rel)
+
        NGC_r_G = np.sqrt(posNGC[:,0]**2 + posNGC[:,1]**2 + posNGC[:,2]**2)
        t_peri[i], r_peri[i], t_apo[i], r_apo[i], p_peri[i], p_apo[i] = orbit_properties(t, NGC_r_G)
 
@@ -242,29 +260,3 @@ if __name__ == "__main__":
                 pmn_here))
 
     f.close()
-    """
-    font = {'size':18, 'family':'serif'}
-    plt.matplotlib.rc('font', **font)
-
-    plt.figure(figsize=(14, 14))
-    plt.subplot(2, 2, 1)
-    plt.scatter(t_min_rel, r_rel_mins, c='k', s=1, alpha=0.5)
-    plt.ylabel('$Relative\ Distance [kpc]$')
-    plt.xlabel(r'$t[Gyrs]$')
-    # tidal radius
-    plt.axhline(7.36)
-
-    plt.subplot(2, 2, 2)
-    h = plt.hist(Theta, color='darkorange', rwidth=0.9, normed=True, bins=15)
-    plt.xlabel(r'$\theta [^{\circ}]$')
-
-
-    plt.subplot(2, 2, 3)
-    h2 = plt.hist(peris, color='purple', rwidth=0.9, normed=True, bins=15)
-    plt.xlabel('$r_{peri}[kpc]$')
-
-    plt.subplot(2, 2, 4)
-    h3 = plt.hist(apos, color='k', rwidth=0.9, normed=True, bins=15)
-    plt.xlabel('$r_{apo}[kpc]$')
-    plt.savefig('model1_analysis.pdf', bbox_inches='tight', dpi=300)
-    """

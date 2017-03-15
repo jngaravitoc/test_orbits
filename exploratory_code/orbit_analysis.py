@@ -47,30 +47,91 @@ def load_orbit(filename, lmc):
 
 
 def angular_m(r, v):
-    L = np.cross(r,v)
+    """
+    Compute the angular momentum of the particle
+    at the present time.
+    to-do:
+
+    Guarantee that the given position and velocity
+    is the present one and not the ICs.
+    """
+
+    L = np.cross(r[0],v[0])
     return L/np.linalg.norm(L)
+
 
 def angles(t, r1, v1, r2, v2):
     L_NGC = angular_m(r1, v1)
     L_sag = angular_m(r2, v2)
     orb_dot = np.zeros(len(t))
-    for i in range(len(t)):
-        norm_NGC = np.linalg.norm(L_NGC[i])
-        norm_sag = np.linalg.norm(L_sag[i])
-        orb_dot[i] = np.dot(L_NGC[i]/norm_NGC, L_sag[i]/norm_sag)
+    norm_NGC = np.linalg.norm(L_NGC)
+    norm_sag = np.linalg.norm(L_sag)
+    orb_dot = np.dot(L_NGC/norm_NGC, L_sag/norm_sag)
     theta =  np.arccos(orb_dot)*180/np.pi
     return np.mean(theta)
 
 
 def min_dist(t, drel):
+    """"
+    Computes the minimum relative distance and the time at where that
+    happens.
+    """
+
     index = np.argmin(drel)
     return t[index], drel[index]
+
+
+def tidal_radius_sag(possag):
+    r = np.sqrt(possag[:,0]**2 + possag[:,1]**2 + possag[:,2]**2)
+    m = 0.22072889
+    b = -0.46641561
+    return r*m+b
+
+
+def dif_potentials(r, r_tan):
+    """
+    compute the potentials of the MW and Sgr at a perpedincular radius
+    to the galactocentric vector of Sgr.
+
+    To-Do:
+
+    Generalize to any MW potential!
+
+    """
+
+    mw_r = (r**2+r_tan**2)**0.5
+    mw_pot = soda.profiles.pot_NFW(9.86, mw_r, 0, 0, 1E12)
+    sgr_pot = soda.profiles.pot_NFW(8, r_tan, 0, 0, 1E10)
+    return (np.abs(mw_pot) - np.abs(sgr_pot))
+
+def encounters(t_r, possag, drel, time):
+    clo_enc = np.where(drel<t_r)[0]
+    return time[clo_enc], possag[clo_enc,0], possag[clo_enc,1], possag[clo_enc,2]
+
+
+def proper_motions(posngc, x_NGC, y_NGC, z_NGC, pmw, pmn):
+    """
+    Finding the proper motions from the positions of Sgr
+    """
+
+    index = np.where((posngc[0][0] == x_NGC) & (posngc[0][1] == y_NGC) & (posngc[0][2] == z_NGC))
+
+    if len(index[0])>1:
+        print(len(index[0]), index[0])
+        print('more than 1 proper motion found!')
+        return(pmw[index[0][0]], pmn[index[0][0]])
+    else:
+        return (pmw[index[0]], pmn[index[0]])
+
+
+
 
 def orbit_properties(t, R_sag):
     """
     Function that computes the pericenters and apocenters of orbits
 
     input: galactocentric distance
+
 
     output:
     ------
@@ -140,6 +201,16 @@ if __name__ == "__main__":
     p_peri = np.zeros(N_files)
 
 
+
+    ppms = np.loadtxt('mc2.ngc2419')
+
+    pmw = ppms[:,0]
+    pmn = ppms[:,1]
+    xNGC = ppms[:,2]
+    yNGC = ppms[:,3]
+    zNGC = ppms[:,4]
+
+
     #plt.figure(figsize=(10,5))
 
     with open(path+file_name) as f:
@@ -150,11 +221,25 @@ if __name__ == "__main__":
     f.write('#t_peri, r_perim t_apo, r_apo, p_peri, p_apo, t_min_rel, r_rel_min, theta \n')
     for i in range(len(name)):
        t, posNGC, velNGC, posSag, velSag, d_rel = load_orbit(path+name[i], lmc)
+
+       t_r_sag = tidal_radius_sag(posSag)
+       t_enc, x_enc, y_enc, z_enc = encounters(t_r_sag, posSag, d_rel, t)
+       #_enc = (x_enc**2 + y_enc**2 + z_enc**2)**0.5
+       if len(t_enc>0):
+           enc = 1
+       else: 
+           enc = 0
+       pmw_here, pmn_here = proper_motions(posNGC, xNGC, yNGC, zNGC, pmw, pmn)
        Theta[i] = angles(t, posNGC, velNGC, posSag, velSag)
        t_min_rel[i] , r_rel_mins[i] = min_dist(t, d_rel)
        NGC_r_G = np.sqrt(posNGC[:,0]**2 + posNGC[:,1]**2 + posNGC[:,2]**2)
        t_peri[i], r_peri[i], t_apo[i], r_apo[i], p_peri[i], p_apo[i] = orbit_properties(t, NGC_r_G)
-       f.write(("%f %f %f %f %f %f %f %f %f \n")%(t_peri[i], r_peri[i], t_apo[i], r_apo[i], p_peri[i], p_apo[i], t_min_rel[i], r_rel_mins[i], Theta[i]))
+
+
+       f.write(("%f %f %f %f %f %f %f %f %f %d %f %f \n")%(t_peri[i],\
+                r_peri[i], t_apo[i], r_apo[i], p_peri[i], p_apo[i],\
+                t_min_rel[i], r_rel_mins[i], Theta[i], enc, pmw_here,\
+                pmn_here))
 
     f.close()
     """
